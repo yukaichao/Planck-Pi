@@ -625,6 +625,30 @@ nameserver 8.8.8.8
 
 如果可以ping通www.baidu.com就说明配置完成了。
 
+Linux上配置网卡共享网络：
+
+> **参考资料：**
+>
+> * [linux利用iptables使双网卡共享网络](https://jingyan.baidu.com/article/59703552d060918fc00740d9.html)
+
+修改配置文件
+```
+sudo nano /etc/sysctl.conf
+去掉“net.ipv4.ip_forward=1”前面的#，或者添加该条目
+
+使用sysctl -p命令将其生效
+sudo sysctl -p
+```
+修改防火墙
+```
+iptables -F
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -t nat -A POSTROUTING -o enp5s0f1 -j MASQUERADE
+
+enp5s0f1 为你的网卡
+```
+
 #### <span id="head24">5.3.5 启用swap</span>
 
 芯片的SiP内存只有64MB，大部分情况下都不够用，所以需要开启swap使用内存卡的一部分空间来作为交换内存。
